@@ -2,21 +2,21 @@
 
 const http = require('http');
 
-const SimpleResource = require('./model/simple-resource.js');
+const SimpleResource = require('./model/simpleresource.js');
 const Router = require('./lib/router.js');
 const storage = require('./lib/storage.js');
 
 const PORT = process.env.PORT || 3000;
 const router = new Router();
 
-router.get('/api/simple-resource', function(req, res){
+router.get('/api/simpleresource', function(req, res){
   if (req.url.query.id) {
-    storage.fetchItem('note', req.url.query.id)
-    .then( note => {
+    storage.fetchItem('simpleresource', req.url.query.id)
+    .then( simpleresource => {
       res.writeHead( 200, {
         'Content-Type': 'application/json',
       });
-      res.write(JSON.stringify(SimpleResource));
+      res.write(JSON.stringify(simpleresource));
       res.end();
     })
     .catch( err => {
@@ -38,12 +38,12 @@ router.get('/api/simple-resource', function(req, res){
 
 router.post('/api/simple-resource', function(req, res){
   try{
-    var note = new Note(req.body.name, req.body.conent);
-    storage.createItem('note', note);
+    var simpleresource = new SimpleResource(req.body.name, req.body.conent);
+    storage.createItem('simple resource', simpleresource);
     res.writeHead( 200, {
       'Content-Type': 'application/json',
     });
-    res.write(JSON.stringify(note));
+    res.write(JSON.stringify(simpleresource));
     res.end();
   } catch (err) {
     console.error(err);
@@ -58,7 +58,13 @@ router.post('/api/simple-resource', function(req, res){
   res.end();
 });
 
+router.delete('api/simple-resource', function(req, res) {
+  storage.deleteItem(req.url.query.id);
+  res.end();
+});
+
 const server = http.createServer(router.route());
+
 server.listen(PORT, function(){
   console.log('server up :: ', PORT);
 });
